@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aze博客后台</title>
+    <!--导入bootstrap-->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+
+    <!-- 引入样式element -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+    <!-- import Vue before Element -->
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <style>
+        html, body, #app, .el-container {
+            /*设置内部填充为0，几个布局元素之间没有间距*/
+            padding: 0px;
+            /*外部间距也是如此设置*/
+            margin: 0px;
+            /*统一设置高度为100%*/
+            height: 100%;
+        }
+
+        .authentication-card {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        iframe {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <el-container style="height:100%" direction="vertical">
+        <el-header style="padding: 0">
+            <div style="background-color: #EBEBEB;width: 100%;height:60px">
+                <div style="width:100%;background-color: #2F4050; overflow: hidden">
+                    <el-row type="flex" justify="end">
+                        <el-col :span="24">
+                            <el-menu
+                                    :default-active="menuIndex"
+                                    class="el-menu-demo"
+                                    mode="horizontal"
+                                    @select="handleSelect"
+                                    background-color="#545c64"
+                                    text-color="#fff"
+                                    active-text-color="#ffd04b">
+
+                                <el-menu-item index="1">
+                                    <i class="el-icon-menu"></i>
+                                    <span slot="title">首页</span>
+                                </el-menu-item>
+
+                                <el-menu-item index="2">
+                                    <i class="el-icon-menu"></i>
+                                    <span slot="title">添加博客</span>
+                                </el-menu-item>
+
+                                <el-menu-item index="3">
+                                    <i class="el-icon-menu"></i>
+                                    <span slot="title">博客管理</span>
+                                </el-menu-item>
+
+                                <el-menu-item index="4">
+                                    <i class="el-icon-menu"></i>
+                                    <span slot="title">用户管理</span>
+                                </el-menu-item>
+                                <el-submenu index="5">
+                                    <template slot="title">
+                                        <i class="el-icon-setting"></i>
+                                        <span>账号管理</span>
+                                    </template>
+                                    <el-menu-item-group>
+                                        <el-menu-item index="5-1">全局设置</el-menu-item>
+                                        <el-menu-item index="5-2">修改密码</el-menu-item>
+                                        <el-menu-item index="5-3">退出</el-menu-item>
+                                    </el-menu-item-group>
+                                </el-submenu>
+
+                            </el-menu>
+                        </el-col>
+                    </el-row>
+                </div>
+            </div>
+        </el-header>
+        <el-main style="padding: 0;overflow:hidden;">
+            <!--src为页面名称-->
+            <!--src为页面名称 初始页面-->
+            <iframe scrolling="auto" frameborder="0" :src="iframeIndex"></iframe>
+
+        </el-main>
+    </el-container>
+
+</div>
+
+<script src="../static/js/jquery.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<script src="../static/js/modernizr.js"></script>
+<!--导入vue-->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            //配置，进入页面时的初始页面
+            iframeIndex: "index",
+            //配置初始化时的导航下标
+            menuIndex: "1",
+
+        },
+        created() {
+
+        },
+        mounted() {
+
+        },
+        methods: {
+            /*  修改下侧的页面*/
+            handleSelect: function (key, keyPath) {
+                switch (key) {
+                    case '1':
+                        this.iframeIndex = "index";
+                        break;
+                    case '2':
+                        this.iframeIndex = "blog-add";
+                        break;
+                    case '3':
+                        this.iframeIndex = "blog-list";
+                        break;
+                    case '4':
+                        this.iframeIndex = "pointManagement";
+                        break;
+                    case '5':
+                        this.iframeIndex = "projectVerification";
+                        break;
+                    case '6-1':
+                        this.iframeIndex = "counterReceive";
+                        break;
+                    case '6-2':
+                        this.iframeIndex = "callData";
+                        break;
+
+                    case '6-3':
+                        location.href = "/business/login";
+                        break;
+                }
+            }
+        }
+    })
+</script>
+</html>

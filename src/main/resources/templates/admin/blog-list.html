@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>博客管理</title>
+    <!--导入bootstrap-->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+
+    <!-- 引入样式element -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+    <!-- import Vue before Element -->
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <!-- import JavaScript -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <style>
+        .title {
+            margin-top: 20px;
+            margin-left: 100px;
+        }
+    </style>
+</head>
+<body>
+<div id="app" :style="styleObject">
+    <el-row>
+
+        <div style="margin-bottom: 20px;">
+            <el-card style="height: 100%">
+                <div style="width: 100% ;">
+                    <div  align="center">
+                        博客管理
+                    </div>
+                    <el-divider><i class="el-icon-s-promotion"></i></el-divider>
+                </div>
+
+                <div class="block">
+                        <el-table
+                                :data="blogList"
+                                border
+                                style="width: 90%">
+                            <el-table-column
+                                    prop="id"
+                                    label="日期"
+                                    width="180">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="title"
+                                    label="标题"
+                                    width="180"
+                                    v-show="false">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="shpfm"
+                                    label="封面">
+                                <template slot-scope="scope">
+                                    <el-image
+                                            style="width: 120px;
+                    height: 120px"
+                                            :src=scope.row.shpfm>
+                                    </el-image>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="shpzhl"
+                                    label="分类"
+                                    width="180"
+                                    v-show="false">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="shpmsh"
+                                    label="描述">
+                            </el-table-column>
+
+                            <el-table-column
+                                    prop="tag"
+                                    label="项目状态"
+                                    width="100"
+                                    :filters="[{ text: '正常', value: '正常' }, { text: '未淘汰', value: '未淘汰' }]"
+                                    :filter-method="filterTag"
+                                    filter-placement="bottom-end">
+                                <template slot-scope="scope">
+                                    <el-tag
+                                            :type="scope.row.tag === '正常' ? 'success' : 'danger'"
+                                            disable-transitions>{{scope.row.tag}}</el-tag>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    fixed="right"
+                                    label="操作"
+                                    width="100">
+                                <template slot-scope="scope">
+                                    <el-button type="danger" size="small" @click="projectShztOut(scope.row.shpbh)">淘汰</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+
+                </div>
+
+                <div >
+                    <el-divider><i class="el-icon-mobile-phone"></i></el-divider>
+                    <div  align="center">Aze</div>
+                </div>
+
+            </el-card>
+        </div>
+
+
+    </el-row>
+
+</div>
+
+<script src="../static/js/jquery.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<script src="../static/js/modernizr.js"></script>
+<!--导入vue-->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</body>
+<style>
+    div {
+        font-size: 16px
+    }
+</style>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                styleObject: {
+                    height: '900px'
+                },
+                blogList:[]
+            };
+        },
+        methods: {
+            bindData () {
+                var that = this;
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/blog/list',
+                    success: function (data) {
+                        that.blogList = data.data;
+                    }
+                });
+            },
+        },
+        mounted() {
+            // 动态设置背景图的高度为浏览器可视区域高度
+            // 首先在Virtual DOM渲染数据时，设置下demo的高度．
+            this.styleObject.height = `${document.documentElement.clientWidth*0.4}px`; // 具体计算看需要
+            // 然后监听window的resize事件．在浏览器窗口变化时再设置下背景图高度．
+            const that = this;
+            window.onresize = function temp() {
+                that.styleObject.height = `${document.documentElement.clientWidth*0.4}px`;
+            };
+        },
+
+        created() {
+            this.bindData();
+        }
+    })
+</script>
+</html>

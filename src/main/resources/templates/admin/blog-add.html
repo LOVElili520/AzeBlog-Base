@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新增博客</title>
+    <!--导入bootstrap-->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <!--导入vue 引入element需要在vue之后 -->
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!-- 引入样式element -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+    <style>
+        .title {
+            margin-top: 20px;
+            margin-left: 200px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div style="margin-bottom: 20px">
+        <el-card>
+            <div style="width: 100% ;">
+                <div align="center">
+                    新增博客
+                </div>
+                <el-divider><i class="el-icon-s-promotion"></i></el-divider>
+
+                <div style="margin-left: 180px">
+                    <el-form label-width="80px">
+                        <el-form-item label="博客标题">
+                            <div style="width: 250px">
+                                <el-input v-model="blog.title"></el-input>
+                            </div>
+                        </el-form-item>
+
+                    </el-form>
+                    <el-form label-width="80px" :inline="true">
+                        <el-form-item label="项目分类">
+                            <div style="width: 250px">
+                                <!--  filterable 可搜索  ，multiple 可多选-->
+                                <el-select style="width: 100%" filterable v-model="blog.tagName" placeholder="请选择">
+                                    <el-option
+                                            v-for="item in tagList"
+                                            :key="item.id"
+                                            :label="item.tagName"
+                                            :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </el-form-item>
+
+                        <el-form-item>
+                            <el-button type="primary" @click="addTagDialog = true">添加分类</el-button>
+                        </el-form-item>
+                    </el-form>
+
+                    </el-form>
+                    <el-form label-width="80px">
+                        <el-form-item label="博客描述">
+                            <div style="width: 400px">
+                                <el-input type="textarea" v-model="blog.describe"></el-input>
+                            </div>
+                        </el-form-item>
+
+                        <el-form-item label="博客正文">
+                            <!--       <div  style="width: 1000px">
+                                       <vue-egdit ref="editor" id="editor" v-model="blog.content" ></vue-egdit>
+                                   </div>-->
+                            <div id="editor">
+                                <p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>
+                            </div>
+                            <textarea id="text" style="width:100%; height:200px;"></textarea>
+
+                        </el-form-item>
+
+                        <!--  <el-form-item label="项目图片">
+                              <div style="width: 250px">
+                                  &lt;!&ndash;                                          :file-list="fileList"&ndash;&gt;
+                                  <el-upload
+                                          class="upload-demo"
+                                          :on-success="tpsUpload"
+                                          :on-remove="handleRemove"
+                                          :limit="3"
+                                          list-type="picture"
+                                          action="/api/tupian">
+                                      <el-tooltip class="item" effect="dark" content="只能上传jpg/png文件，且不超过500kb,最多3张"
+                                                  placement="top-start">
+                                          <el-button size="small" type="primary">点击上传</el-button>
+                                      </el-tooltip>
+                                  </el-upload>
+                              </div>
+                          </el-form-item>-->
+                        <el-form-item>
+                            <el-button type="primary" @click="projectUpload">提交</el-button>
+                        </el-form-item>
+                    </el-form>
+                </div>
+
+                <el-divider><i class="el-icon-mobile-phone"></i></el-divider>
+                <div align="center">Aze</div>
+            </div>
+        </el-card>
+    </div>
+
+    <!--弹窗模块-->
+    <el-dialog
+            title="新增分类"
+            :visible.sync="addTagDialog"
+            width="30%"
+            center>
+        <span></span>
+        <el-form label-width="80px">
+            <el-form-item label="分类名称">
+                <div style="width: 250px">
+                    <el-input v-model="blog.title"></el-input>
+                </div>
+            </el-form-item>
+
+        </el-form>
+    <el-button @click="addTagDialog = false">取 消</el-button>
+    <el-button type="primary" @click="">确 定</el-button>
+  </span>
+    </el-dialog>
+
+
+</div>
+</body>
+<style>
+    div {
+        font-size: 16px
+    }
+</style>
+<!-- 注意， 只需要引用 JS，无需引用任何 CSS ！！！-->
+<script type="text/javascript" src="../static/js/wangEditor.js"></script>
+
+<script src="../static/js/jquery.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<script src="../static/js/modernizr.js"></script>
+
+<script type="text/javascript">
+
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                tagList: [],
+                blog: {
+                    title: '',
+                    describe: '',
+                    tagName: '',
+                    content: ''
+                },
+                tag:{
+                    tagName:''
+                },
+                addTagDialog: false
+            };
+        },
+        methods: {
+            //获取博客标签
+            //查询标签
+            listTag: function () {
+                var that = this;
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/tag/list',
+                    success: function (data) {
+                        that.tagList = data.data;
+                    }
+                })
+            },
+
+            //新增博客
+            insertBlog() {
+
+            },
+
+            handleRemove() {
+            },
+            //轮播图的上传
+            tpsUpload(file) {
+                if (file !== null) {
+                    this.ShpdaData.tps.push(file);
+                    console.log(this.ShpdaData.tps);
+                    /*    this.$message({
+                            type: 'success',
+                            message: "1111"
+                        });*/
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: "上传失败"
+                    });
+                    return false;
+                }
+            },
+            //上传完成后把图片地址给file
+            handleBeforeUpload(file) {
+                if (file !== null) {
+                    this.ShpdaData.shpfm = file;
+                    //console.log(file);
+                    /*    this.$message({
+                            type: 'success',
+                            message: "1111"
+                        });*/
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: "上传失败"
+                    });
+                    return false;
+                }
+            },
+            // 项目的上传
+            projectUpload() {
+                //把文本编辑器的内容转义
+                console.log(this.ShpdaData.shpmshEditor.toString());
+                //描述
+                var msh = this.ShpdaData.shpmshEditor.toString();
+                // 引号 ：/"([^"]*)"/g
+                msh = encodeURI(msh);
+                if (this.authenticationState == '已审核') {
+                    axios.post("/project/upload",
+                        "shpmch=" + this.ShpdaData.shpmch +
+                        "&shpflbh=" + this.ShpdaData.shpflbh + "&shcjg=" + this.ShpdaData.shcjg +
+                        "&shpmsh=" + msh + "&dhjf=" + this.ShpdaData.dhjf +
+                        "&jqg=" + this.ShpdaData.jqg + "&shpfm=" + this.ShpdaData.shpfm +
+                        "&sellingWay=" + this.ShpdaData.sellingWay + "&tps=" + this.ShpdaData.tps +
+                        "&shpmshEditor" + this.ShpdaData.shpmshEditor
+                    ).then((res) => {
+                        if (res.status != 200) {
+                            this.$message({
+                                type: 'error',
+                                message: '上传项目失败!'
+                            });
+                        } else {
+                            if (res.data.prompt == 'Error') {
+                                this.$message({
+                                    type: 'error',
+                                    message: res.data.root
+                                });
+                            } else {
+                                this.clearShpdaData();
+                                console.log(this.ShjData);
+                                this.$message({
+                                    type: 'success',
+                                    message: "上传项目成功"
+                                });
+                            }
+                        }
+                    }).catch((err) => {
+                        this.$message({
+                            type: 'error',
+                            message: '上传项目失败!'
+                        });
+                    })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '您未认证，不能进行项目上传!'
+                    });
+                }
+            }
+        },
+        mounted() {
+            //使用wangEditor富文本编辑器
+            /*  var E = window.wangEditor
+              var editor = new E('#editor')
+              editor.create();*/
+
+            var E = window.wangEditor
+            var editor = new E('#editor')
+            var $text = $('#text')
+            editor.customConfig.onchange = function (html) {
+                // 监控变化，同步更新到 textarea
+                $text.val(html)
+            }
+            editor.create()
+            // 初始化 textarea 的值
+            $text.val(editor.txt.html())
+        },
+        created() {
+            this.listTag();
+        }
+    })
+</script>
+</html>
