@@ -61,7 +61,7 @@
                     <el-form label-width="80px">
                         <el-form-item label="博客描述">
                             <div style="width: 400px">
-                                <el-input type="textarea" v-model="blog.describe"></el-input>
+                                <el-input type="textarea" v-model="blog.blogDescribe"></el-input>
                             </div>
                         </el-form-item>
 
@@ -69,10 +69,10 @@
                             <!--       <div  style="width: 1000px">
                                        <vue-egdit ref="editor" id="editor" v-model="blog.content" ></vue-egdit>
                                    </div>-->
-                            <div id="editor">
+                            <div id="editor" style="float: none">
                                 <p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>
                             </div>
-                            <textarea id="text" style="width:100%; height:200px;"></textarea>
+                            <textarea id="text" v-model="blog.content" style="width:100%; height:200px;"></textarea>
 
                         </el-form-item>
 
@@ -94,7 +94,7 @@
                               </div>
                           </el-form-item>-->
                         <el-form-item>
-                            <el-button type="primary" @click="projectUpload">提交</el-button>
+                            <el-button type="primary" @click="insertBlog">提交</el-button>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -115,16 +115,15 @@
         <el-form label-width="80px">
             <el-form-item label="分类名称">
                 <div style="width: 250px">
-                    <el-input v-model="blog.title"></el-input>
+                    <el-input v-model="tag.tagName"></el-input>
                 </div>
             </el-form-item>
 
         </el-form>
-    <el-button @click="addTagDialog = false">取 消</el-button>
-    <el-button type="primary" @click="">确 定</el-button>
-  </span>
+        <el-button @click="addTagDialog = false">取 消</el-button>
+        <el-button type="primary" @click="insertTag">确 定</el-button>
+        </span>
     </el-dialog>
-
 
 </div>
 </body>
@@ -134,7 +133,8 @@
     }
 </style>
 <!-- 注意， 只需要引用 JS，无需引用任何 CSS ！！！-->
-<script type="text/javascript" src="../static/js/wangEditor.js"></script>
+<script src="https://cdn.bootcss.com/wangEditor/3.1.1/wangEditor.js"></script>
+<link href="https://cdn.bootcss.com/wangEditor/3.1.1/wangEditor.css" rel="stylesheet">
 
 <script src="../static/js/jquery.min.js"></script>
 <script src="../static/js/bootstrap.min.js"></script>
@@ -151,10 +151,11 @@
                     title: '',
                     describe: '',
                     tagName: '',
-                    content: ''
+                    content: '',
+                    blogDescribe:''
                 },
-                tag:{
-                    tagName:''
+                tag: {
+                    tagName: ''
                 },
                 addTagDialog: false
             };
@@ -162,7 +163,7 @@
         methods: {
             //获取博客标签
             //查询标签
-            listTag: function () {
+            listTag() {
                 var that = this;
                 $.ajax({
                     type: 'GET',
@@ -172,10 +173,63 @@
                     }
                 })
             },
+            insertTag() {
+                var that = this;
+                $.ajax({
+                    type: 'POST',
+                    contentType: 'application/json;charset=UTF-8',
+                    url: '/api/tag/insert',
+                    data: JSON.stringify(that.tag),
+                    success: function (data) {
+                        if (data.code != 0) {
+                            that.$message({
+                                type: 'error',
+                                message: '添加分类失败!'
+                            });
+                        } else {
+                            that.addTagDialog = false;
+                            that.$message({
+                                type: 'success',
+                                message: '添加分类成功!'
+                            });
+                            that.listTag();
+                            that.tag.title = '';
+                        }
+                    }
+                })
+            },
 
-            //新增博客
             insertBlog() {
+                var that = this;
+                $.ajax({
+                    type: 'POST',
+                    contentType: 'application/json;charset=UTF-8',
+                    url: '/api/blog/insert',
+                    data: JSON.stringify(that.blog),
+                    success: function (data) {
+                        if (data.code != 0) {
+                            that.$message({
+                                type: 'error',
+                                message: '添加博客失败!'
+                            });
+                        } else {
+                            that.$message({
+                                type: 'success',
+                                message: '添加博客成功!'
+                            });
+                            that.cleanBlog();
+                        }
+                    }
+                })
+            },
 
+            //清除博客
+           cleanBlog() {
+               this.blog.title='';
+               this.blog.describe='';
+               this.blog.tagName='';
+               this.blog.content='';
+               this.blog.blogDescribe='';
             },
 
             handleRemove() {
@@ -273,6 +327,7 @@
 
             var E = window.wangEditor
             var editor = new E('#editor')
+            editor.customConfig.zIndex = 100;
             var $text = $('#text')
             editor.customConfig.onchange = function (html) {
                 // 监控变化，同步更新到 textarea

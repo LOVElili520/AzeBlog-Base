@@ -3,10 +3,9 @@ import	java.awt.Desktop.Action;
 
 import com.aze.blog.common.Result;
 import com.aze.blog.dao.TagMapper;
+import com.aze.blog.model.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author ：Aze
@@ -24,5 +23,10 @@ public class TagApiController {
     @GetMapping("/list")
     public Result list(){
         return Result.successData(tagMapper.selectList(null));
+    }
+
+    @PostMapping("/insert")
+    public Result insert(@RequestBody Tag tag){
+        return Result.successData(tagMapper.insert(tag));
     }
 }

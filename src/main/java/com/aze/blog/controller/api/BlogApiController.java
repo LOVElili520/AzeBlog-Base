@@ -1,12 +1,11 @@
 package com.aze.blog.controller.api;
+import	java.nio.file.Path;
 
 import com.aze.blog.common.Result;
 import com.aze.blog.dao.BlogMapper;
 import com.aze.blog.model.Blog;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author ：Aze
@@ -30,6 +29,11 @@ public class BlogApiController {
     @GetMapping("/list")
     public Result listAll(){
         return Result.successData(blogMapper.selectList(null));
+    }
+
+    @PostMapping("/insert")
+    public Result insertBlog(@RequestBody Blog blog){
+        return  Result.successData(blogMapper.insert(blog));
     }
 
 }
