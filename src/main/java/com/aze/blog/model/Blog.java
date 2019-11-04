@@ -28,5 +28,7 @@ public class Blog {
     private String tagName;
 
     private  String content;
+    //封面地址
+    private String imageUrl;
 
 }

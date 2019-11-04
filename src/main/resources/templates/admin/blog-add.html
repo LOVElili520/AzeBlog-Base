@@ -57,8 +57,24 @@
                         </el-form-item>
                     </el-form>
 
-                    </el-form>
                     <el-form label-width="80px">
+                        <el-form-item label="博客封面">
+                            <div style="width: 350px">
+                                <el-upload
+                                        class="upload-demo"
+                                        action="/api/upload"
+                                        :on-preview="handlePreview"
+                                        :on-remove="handleRemove"
+                                        on-success="onSuccessUpload"
+                                        :file-list="fileList"
+                                        list-type="picture">
+                                    <el-button size="small" type="primary">点击上传</el-button>
+                                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                                </el-upload>
+                            </div>
+
+                        </el-form-item>
+
                         <el-form-item label="博客描述">
                             <div style="width: 400px">
                                 <el-input type="textarea" v-model="blog.blogDescribe"></el-input>
@@ -72,27 +88,17 @@
                             <div id="editor" style="float: none">
                                 <p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>
                             </div>
-                            <textarea id="text" v-model="blog.content" style="width:100%; height:200px;"></textarea>
-
+                            <el-input
+                                    type="textarea"
+                                    :rows="2"
+                                    style="width:100%; height:200px;"
+                                    id="text"
+                                    placeholder="请输入内容"
+                                    v-if="false"
+                                    v-model="blog.content">
+                            </el-input>
                         </el-form-item>
 
-                        <!--  <el-form-item label="项目图片">
-                              <div style="width: 250px">
-                                  &lt;!&ndash;                                          :file-list="fileList"&ndash;&gt;
-                                  <el-upload
-                                          class="upload-demo"
-                                          :on-success="tpsUpload"
-                                          :on-remove="handleRemove"
-                                          :limit="3"
-                                          list-type="picture"
-                                          action="/api/tupian">
-                                      <el-tooltip class="item" effect="dark" content="只能上传jpg/png文件，且不超过500kb,最多3张"
-                                                  placement="top-start">
-                                          <el-button size="small" type="primary">点击上传</el-button>
-                                      </el-tooltip>
-                                  </el-upload>
-                              </div>
-                          </el-form-item>-->
                         <el-form-item>
                             <el-button type="primary" @click="insertBlog">提交</el-button>
                         </el-form-item>
@@ -137,8 +143,8 @@
 <link href="https://cdn.bootcss.com/wangEditor/3.1.1/wangEditor.css" rel="stylesheet">
 
 <script src="../static/js/jquery.min.js"></script>
-<script src="../static/js/bootstrap.min.js"></script>
-<script src="../static/js/modernizr.js"></script>
+<!--<script src="../static/js/bootstrap.min.js"></script>-->
+<!--<script src="../static/js/modernizr.js"></script>-->
 
 <script type="text/javascript">
 
@@ -147,12 +153,13 @@
         data() {
             return {
                 tagList: [],
+                fileList:[],
                 blog: {
                     title: '',
-                    describe: '',
+                    blogDescribe: '',
                     tagName: '',
                     content: '',
-                    blogDescribe:''
+                    imageUrl:''
                 },
                 tag: {
                     tagName: ''
@@ -224,37 +231,27 @@
             },
 
             //清除博客
-           cleanBlog() {
-               this.blog.title='';
-               this.blog.describe='';
-               this.blog.tagName='';
-               this.blog.content='';
-               this.blog.blogDescribe='';
+            cleanBlog() {
+                this.blog.title = '';
+                this.blog.tagName = '';
+                this.blog.content = '';
+                this.blog.blogDescribe = '';
             },
 
-            handleRemove() {
+
+            handleChange(){},
+
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
             },
-            //轮播图的上传
-            tpsUpload(file) {
-                if (file !== null) {
-                    this.ShpdaData.tps.push(file);
-                    console.log(this.ShpdaData.tps);
-                    /*    this.$message({
-                            type: 'success',
-                            message: "1111"
-                        });*/
-                } else {
-                    this.$message({
-                        type: 'error',
-                        message: "上传失败"
-                    });
-                    return false;
-                }
+            handlePreview(file) {
+                console.log(file);
             },
+
             //上传完成后把图片地址给file
-            handleBeforeUpload(file) {
+            onSuccessUpload(file) {
                 if (file !== null) {
-                    this.ShpdaData.shpfm = file;
+                    this.blog.imageUrl = file;
                     //console.log(file);
                     /*    this.$message({
                             type: 'success',
@@ -268,74 +265,32 @@
                     return false;
                 }
             },
-            // 项目的上传
-            projectUpload() {
-                //把文本编辑器的内容转义
-                console.log(this.ShpdaData.shpmshEditor.toString());
-                //描述
-                var msh = this.ShpdaData.shpmshEditor.toString();
-                // 引号 ：/"([^"]*)"/g
-                msh = encodeURI(msh);
-                if (this.authenticationState == '已审核') {
-                    axios.post("/project/upload",
-                        "shpmch=" + this.ShpdaData.shpmch +
-                        "&shpflbh=" + this.ShpdaData.shpflbh + "&shcjg=" + this.ShpdaData.shcjg +
-                        "&shpmsh=" + msh + "&dhjf=" + this.ShpdaData.dhjf +
-                        "&jqg=" + this.ShpdaData.jqg + "&shpfm=" + this.ShpdaData.shpfm +
-                        "&sellingWay=" + this.ShpdaData.sellingWay + "&tps=" + this.ShpdaData.tps +
-                        "&shpmshEditor" + this.ShpdaData.shpmshEditor
-                    ).then((res) => {
-                        if (res.status != 200) {
-                            this.$message({
-                                type: 'error',
-                                message: '上传项目失败!'
-                            });
-                        } else {
-                            if (res.data.prompt == 'Error') {
-                                this.$message({
-                                    type: 'error',
-                                    message: res.data.root
-                                });
-                            } else {
-                                this.clearShpdaData();
-                                console.log(this.ShjData);
-                                this.$message({
-                                    type: 'success',
-                                    message: "上传项目成功"
-                                });
-                            }
-                        }
-                    }).catch((err) => {
-                        this.$message({
-                            type: 'error',
-                            message: '上传项目失败!'
-                        });
-                    })
-                } else {
-                    this.$message({
-                        type: 'error',
-                        message: '您未认证，不能进行项目上传!'
-                    });
-                }
-            }
+
         },
         mounted() {
             //使用wangEditor富文本编辑器
             /*  var E = window.wangEditor
               var editor = new E('#editor')
               editor.create();*/
-
+            var that = this;
             var E = window.wangEditor
             var editor = new E('#editor')
             editor.customConfig.zIndex = 100;
             var $text = $('#text')
+
+            //将页面代码同步更新，到content；
             editor.customConfig.onchange = function (html) {
                 // 监控变化，同步更新到 textarea
-                $text.val(html)
+                $text.val(html);
+                that.blog.content = html;
+                alert(that.blog.content);
+                //获取纯文本
+                // that.blog.content=editor.txt.text();
             }
             editor.create()
             // 初始化 textarea 的值
             $text.val(editor.txt.html())
+
         },
         created() {
             this.listTag();
