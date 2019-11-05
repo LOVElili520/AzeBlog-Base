@@ -1,3 +1,4 @@
+/*
 package com.aze.blog.dao;
 import java.util.Date;
 import	java.util.List;
@@ -48,4 +49,4 @@ class BlogMapperTest {
         Assert.assertEquals(3,list.size());
         list.forEach(System.out::println);
     }
-}
+}*/

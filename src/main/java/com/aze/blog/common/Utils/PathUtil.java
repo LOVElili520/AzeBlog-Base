@@ -2,7 +2,7 @@ package com.aze.blog.common.Utils;
 
 /**
  * @author ：Aze
- * @description：图片处理
+ * @description：处理图片路径
  * @date ：Created in 2019/11/4 14:19
  * @modified By：
  * @version:

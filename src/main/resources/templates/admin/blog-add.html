@@ -11,12 +11,6 @@
     <!-- 引入样式element -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 
-    <style>
-        .title {
-            margin-top: 20px;
-            margin-left: 200px;
-        }
-    </style>
 </head>
 <body>
 <div id="app">
@@ -65,11 +59,12 @@
                                         action="/api/upload"
                                         :on-preview="handlePreview"
                                         :on-remove="handleRemove"
-                                        on-success="onSuccessUpload"
+                                        :on-success="onSuccessUpload"
                                         :file-list="fileList"
+                                        :limit="1"
                                         list-type="picture">
                                     <el-button size="small" type="primary">点击上传</el-button>
-                                    <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                                    <div slot="tip" class="el-upload__tip">只能上传一张</div>
                                 </el-upload>
                             </div>
 
@@ -82,12 +77,10 @@
                         </el-form-item>
 
                         <el-form-item label="博客正文">
-                            <!--       <div  style="width: 1000px">
-                                       <vue-egdit ref="editor" id="editor" v-model="blog.content" ></vue-egdit>
-                                   </div>-->
-                            <div id="editor" style="float: none">
+                            <div id="editor">
                                 <p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>
                             </div>
+                            <!--TODO 此处添加一个 text用于双向绑定文本内容-->
                             <el-input
                                     type="textarea"
                                     :rows="2"
@@ -283,7 +276,7 @@
                 // 监控变化，同步更新到 textarea
                 $text.val(html);
                 that.blog.content = html;
-                alert(that.blog.content);
+                // alert(that.blog.content);
                 //获取纯文本
                 // that.blog.content=editor.txt.text();
             }

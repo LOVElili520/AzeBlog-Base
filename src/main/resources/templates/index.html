@@ -85,108 +85,29 @@
 
     <div class="widewrapper main">
         <div class="container">
-            <div class="row">
+            <div class="row" >
                 <div class="col-md-8 blog-main">
-                    <div class="row">
-                        <div class="col-md-6 col-sm-6">
+                    <div class="row" >
+                        <div class="col-md-6 col-sm-6" v-for="item in blogList">
                             <article class=" blog-teaser">
                                 <header>
-                                    <img src="../static/img/1.jpg" alt="">
-                                    <h3><a href="single.html">蓝天的蓝</a></h3>
-                                    <span class="meta">19 August 2015, John Doe</span>
+                                    <img :src="item.imageUrl" alt="">
+                                    <h3><a @click="toSingle(item.id)">{{item.title}}</a></h3>
+                                    <span class="meta">{{item.createTime}}, {{item.userId}}</span>
                                     <hr>
                                 </header>
-                            
                             </article>
                         </div>
-                        <div class="col-md-6 col-sm-6">
-                            <article class="blog-teaser">
-                                <header>
-                                    <img src="../static/img/2.jpg" alt="">
-                                    <h3><a href="single.html">黑色日记</a></h3>
-                                    <span class="meta">19 August 2015, John Doe</span>
-                                    <hr>
-                                </header>
-                            
-                            </article>
-                        </div>
-                    </div>
-        
-                    <div class="row">
-                        <div class="col-md-6 col-sm-6">
-                            <article class="blog-teaser">
-                                <header>
-                                    <img src="../static/img/4.jpg" alt="">
-                                    <h3><a href="single.html">小郑日记1</a></h3>
-                                    <span class="meta">19 August 2015, John Doe</span>
-                                    <hr>
-                                </header>
-                               
-                            </article>
-                        </div>
-                        <div class="col-md-6 col-sm-6">
-                            <article class=" blog-teaser">
-                                <header>
-                                    <img src="../static/img/1.jpg" alt="">
-                                    <h3><a href="single.html">小郑日记1</a></h3>
-                                    <span class="meta">19 August 2015, John Doe</span>
-                                    <hr>
-                                </header>
-                            
-                            </article>
-                        </div>
-
-                    </div>
-                     <div class="row">
-                        <div class="col-md-6 col-sm-6">
-                            <article class="blog-teaser">
-                                <header>
-                                    <img src="../static/img/3.jpg" alt="">
-                                    <h3><a href="single.html">你好世界</a></h3>
-                                    <span class="meta">19 August 2015, John Doe</span>
-                                    <hr>
-                                </header>
-                               
-                            </article>
-                        </div>
-                        <div class="col-md-6 col-sm-6">
-                            <article class=" blog-teaser">
-                                <header>
-                                    <img src="../static/img/1.jpg" alt="">
-                                    <h3><a href="single.html">莉莉</a></h3>
-                                    <span class="meta">19 August 2015, 莉莉</span>
-                                    <hr>
-                                </header>
-                            
-                            </article>
-                        </div>
-
-                    </div>
-                    <div class="copyrights">Collect from <a href="http://www.moobnn.com/"  title="网站模板">网站模板</a></div>
-                     <div class="row">
-                        <div class="col-md-6 col-sm-6">
-                            <article class="blog-teaser">
-                                <header>
-                                    <img src="../static/img/3.jpg" alt="">
-                                    <h3><a href="single.html">Blackor - Responsive HTML5 Theme</a></h3>
-                                    <span class="meta">19 August 2015, John Doe</span>
-                                    <hr>
-                                </header>
-                               
-                            </article>
-                        </div>
-                        <div class="col-md-6 col-sm-6">
-                            <article class=" blog-teaser">
-                                <header>
-                                    <img src="../static/img/5.jpg" alt="">
-                                    <h3><a href="single.html">How to Create Template</a></h3>
-                                    <span class="meta">19 August 2015, John Doe</span>
-                                    <hr>
-                                </header>
-                            
-                            </article>
-                        </div>
-
+<!--                        <div class="col-md-6 col-sm-6">-->
+<!--                            <article class="blog-teaser">-->
+<!--                                <header>-->
+<!--                                    <img src="../static/img/2.jpg" alt="">-->
+<!--                                    <h3><a href="single.html">黑色日记</a></h3>-->
+<!--                                    <span class="meta">19 August 2015, John Doe</span>-->
+<!--                                    <hr>-->
+<!--                                </header>-->
+<!--                            </article>-->
+<!--                        </div>-->
                     </div>
 
                     <div class="paging">
@@ -232,6 +153,9 @@
                     </div>
                 </aside>
                 <!--侧栏结束-->
+
+                <!--底栏——备案号-->
+                <div class="copyrights">Collect from <a href="http://www.moobnn.com/"  title="网站模板">网站模板</a></div>
             </div>
         </div>
     </div>
@@ -265,7 +189,7 @@
                             <i class="fa fa-facebook"></i><i class="fa fa-twitter"></i><i class="fa fa-google"></i>
                         </div>
                     </div>
-                   
+
                 </div>
             </div>
         </div>
@@ -297,7 +221,7 @@
                     tagList:[]
                 },
                 created: function () {
-                    this.bindData();
+                    this.listBlog();
                     this.listTag();
                 },
                 mounted:function (){
@@ -305,13 +229,16 @@
                 },
 
                 methods: {
-                    bindData: function () {
+                    listBlog: function () {
                         var that = this;
                         $.ajax({
                             type: 'GET',
                             url: '/api/blog/list',
                             success: function (data) {
                                 that.blogList = data.data;
+                                for(var i = 0, len = that.blogList.length; i < len; i++){
+                                    that.blogList[i].imageUrl  = "http://"+window.location.host + "/" + that.blogList[i].imageUrl; //获取当前索引的键值
+                                        }
                             }
                         });
                     },
@@ -341,12 +268,7 @@
                             }
                         });
                     },
-                    beforeAction: function () {
-                        //流程待办参数
-                        this.$refs.processEngine.setTodoParams('公告发布', '关于【' + this.info.broadcastSubject + '】的公告发布等待您处理。',
-                            '/pages/basics/broadcast-detail.html?id=' + this.info.id);
-                        return true;
-                    },
+
                     afterAction: function (status, stage) {
                         this.modifyProcessStatus(status, stage);
                     },
