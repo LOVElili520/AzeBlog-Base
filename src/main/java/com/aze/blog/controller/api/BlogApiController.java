@@ -1,5 +1,6 @@
 package com.aze.blog.controller.api;
-import	java.nio.file.Path;
+
+import java.nio.file.Path;
 
 import com.aze.blog.common.Result;
 import com.aze.blog.dao.BlogMapper;
@@ -27,13 +28,18 @@ public class BlogApiController {
      * @return:
      */
     @GetMapping("/list")
-    public Result listAll(){
+    public Result listAll() {
         return Result.successData(blogMapper.selectList(null));
     }
 
     @PostMapping("/insert")
-    public Result insertBlog(@RequestBody Blog blog){
-        return  Result.successData(blogMapper.insert(blog));
+    public Result insertBlog(@RequestBody Blog blog) {
+        return Result.successData(blogMapper.insert(blog));
+    }
+
+    @GetMapping("/getById/{blogId}")
+    public Result getById(@PathVariable String blogId) {
+        return Result.successData(blogMapper.selectById(blogId));
     }
 
 }

@@ -1,7 +1,10 @@
 package com.aze.blog.model;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
-import	java.util.Date;
+import java.util.Date;
 
 /**
  * @author ：Aze
@@ -12,8 +15,8 @@ import	java.util.Date;
  */
 @Data
 public class Blog {
-
-    private  Long id;
+    @TableId(value = "id", type = IdType.ID_WORKER_STR)
+    private String id;
 
     private String title;
 
@@ -22,12 +25,12 @@ public class Blog {
     private Date createTime;
 
     //描述
-    private  String blogDescribe;
+    private String blogDescribe;
 
     //标签
     private String tagName;
 
-    private  String content;
+    private String content;
     //封面地址
     private String imageUrl;
 
