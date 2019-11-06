@@ -220,16 +220,15 @@
                     blogList:[],
                     tagList:[]
                 },
-                created: function () {
+                created(){
                     this.listBlog();
                     this.listTag();
                 },
-                mounted:function (){
-
+                mounted (){
                 },
 
                 methods:{
-                    listBlog: function () {
+                    listBlog() {
                         var that = this;
                         $.ajax({
                             type: 'GET',
@@ -256,25 +255,9 @@
 
                     },
 
-                    modifyProcessStatus: function (status, stage) {
-                        var that = this;
-                        $.ajax({
-                            url: '/api/broadcast/modify-progress-status',
-                            type: 'POST',
-                            async: false,
-                            data: {id: that.domainId, status: status, stage: stage},
-                            success: function success() {
-                                layer.msg("处理完成");
-                            }
-                        });
-                    },
-
-                    afterAction: function (status, stage) {
-                        this.modifyProcessStatus(status, stage);
-                    },
 
                     /*跳转博客详情页面*/
-                    toSingle: function (id) {
+                    toSingle(id) {
                         //原窗口打开
                         window.location.href="single.html?blogId="+id;
                     }

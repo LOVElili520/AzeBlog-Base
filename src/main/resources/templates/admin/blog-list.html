@@ -40,8 +40,8 @@
                                 style="width: 90%">
                             <el-table-column
                                     prop="id"
-                                    label="日期"
-                                    width="180">
+                                    label="博客编号"
+                                    width="240">
                             </el-table-column>
                             <el-table-column
                                     prop="title"
@@ -56,23 +56,23 @@
                                     <el-image
                                             style="width: 120px;
                     height: 120px"
-                                            :src=scope.row.shpfm>
+                                            :src=scope.row.imageUrl>
                                     </el-image>
                                 </template>
                             </el-table-column>
                             <el-table-column
-                                    prop="shpzhl"
+                                    prop="tagName"
                                     label="分类"
                                     width="180"
                                     v-show="false">
                             </el-table-column>
                             <el-table-column
-                                    prop="shpmsh"
+                                    prop="blogDescribe"
                                     label="描述">
                             </el-table-column>
 
                             <el-table-column
-                                    prop="tag"
+                                    prop="tagName"
                                     label="项目状态"
                                     width="100"
                                     :filters="[{ text: '正常', value: '正常' }, { text: '未淘汰', value: '未淘汰' }]"
@@ -87,9 +87,10 @@
                             <el-table-column
                                     fixed="right"
                                     label="操作"
-                                    width="100">
+                                    width="150">
                                 <template slot-scope="scope">
-                                    <el-button type="danger" size="small" @click="projectShztOut(scope.row.shpbh)">淘汰</el-button>
+                                    <el-button  size="small" @click="projectShztOut(scope.row.shpbh)">编辑</el-button>
+                                    <el-button type="danger" size="small" @click="projectShztOut(scope.row.shpbh)">删除</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>

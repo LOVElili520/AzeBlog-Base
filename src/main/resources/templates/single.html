@@ -99,21 +99,19 @@
                 <div class="col-md-8 blog-main">
                     <article class="blog-post">
                         <header>
-
                             <div class="lead-image">
                                 <img :src="Blog.imageUrl" alt="" class="img-responsive">
-
                             </div>
                         </header>
                         <div class="body">
-                            <h1>Responsive HTML5 Template</h1>
+                            <h1>{{Blog.title}}</h1>
                             <div class="meta">
                                 <i class="fa fa-user"></i> John Doe <i class="fa fa-calendar"></i>23 Agustus 2015<i
                                     class="fa fa-comments"></i><span class="data"><a
                                     href="#comments">3 Comments</a></span>
                             </div>
                             <!--文章内容-->
-                            <dl v-html="Blog.content" >
+                            <dl v-html="Blog.content">
                                 {{Blog.content}}
                             </dl>
                         </div>
@@ -373,8 +371,7 @@
                 blogId: '',
                 Blog: {
                    imageUrl:'',
-                    content:''
-
+                    content:""
                 },
             };
         },
@@ -395,7 +392,7 @@
                     }
                 }
             },
-            getBlogById: function () {
+            getBlogById() {
                 var that = this;
                 that.urlSearch();
                 $.ajax({
