@@ -31,7 +31,14 @@ public class Blog {
     private String tagName;
 
     private String content;
+
     //封面地址
     private String imageUrl;
+
+    //是否置顶
+    private Boolean isStick;
+
+    //权重大小
+    private int weightNum;
 
 }
