@@ -178,7 +178,7 @@
                 $.ajax({
                     type: 'POST',
                     contentType: 'application/json;charset=UTF-8',
-                    url: '/api/tag/insert',
+                    url: '/admin/tag/insert',
                     data: JSON.stringify(that.tag),
                     success: function (data) {
                         if (data.code != 0) {
@@ -204,7 +204,7 @@
                 $.ajax({
                     type: 'POST',
                     contentType: 'application/json;charset=UTF-8',
-                    url: '/api/blog/insert',
+                    url: '/admin/blog/insert',
                     data: JSON.stringify(that.blog),
                     success: function (data) {
                         if (data.code != 0) {

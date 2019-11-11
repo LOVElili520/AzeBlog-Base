@@ -39,18 +39,14 @@
                                 border
                                 style="width: 90%">
                             <el-table-column
-                                    prop="id"
-                                    label="博客编号"
-                                    width="240">
-                            </el-table-column>
-                            <el-table-column
                                     prop="title"
                                     label="标题"
-                                    width="180"
+                                    width="200"
                                     v-show="false">
                             </el-table-column>
                             <el-table-column
-                                    prop="shpfm"
+                                    prop="imageUrl"
+                                    width="200"
                                     label="封面">
                                 <template slot-scope="scope">
                                     <el-image
@@ -72,25 +68,27 @@
                             </el-table-column>
 
                             <el-table-column
-                                    prop="tagName"
+                                    prop="isStick"
                                     label="项目状态"
                                     width="100"
-                                    :filters="[{ text: '正常', value: '正常' }, { text: '未淘汰', value: '未淘汰' }]"
-                                    :filter-method="filterTag"
+                                    :filters="[{ text: '已置顶', value:  '已置顶' }, { text: '未置顶', value: '未置顶' }]"
+                                    :filter-method="filterHandler"
                                     filter-placement="bottom-end">
                                 <template slot-scope="scope">
                                     <el-tag
-                                            :type="scope.row.tag === '正常' ? 'success' : 'danger'"
-                                            disable-transitions>{{scope.row.tag}}</el-tag>
+                                            :type="scope.row.isStick === '已置顶' ? 'success' : 'danger'"
+                                            disable-transitions>{{scope.row.isStick}}</el-tag>
                                 </template>
                             </el-table-column>
                             <el-table-column
                                     fixed="right"
                                     label="操作"
-                                    width="150">
+                                    width="250">
                                 <template slot-scope="scope">
                                     <el-button  size="small" @click="projectShztOut(scope.row.shpbh)">编辑</el-button>
+                                    <el-button  type="primary" size="small" @click="stickBlog(scope.row.id)">置顶</el-button>
                                     <el-button type="danger" size="small" @click="projectShztOut(scope.row.shpbh)">删除</el-button>
+
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -134,26 +132,59 @@
             };
         },
         methods: {
+            //初始化数据
             bindData () {
                 var that = this;
                 $.ajax({
                     type: 'GET',
-                    url: '/api/blog/list',
+                    url: '/admin/blog/list',
                     success: function (data) {
                         that.blogList = data.data;
+                        /*循环便利将博客的置顶状态转义*/
+                        for (var i = 0, len = that.blogList.length; i < len; i++) {
+                            if (that.blogList[i].isStick == true){
+                                that.blogList[i].isStick ="已置顶";
+                            }else {
+                                that.blogList[i].isStick ="未置顶";
+
+                            }
+
+                        }
                     }
                 });
             },
+
+            /*博客置顶*/
+            stickBlog(id){
+                var that = this;
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/blog/stickBlog/' + id,
+                    success: function (data) {
+                        if (data.code != 0) {
+                            that.$message({
+                                type: 'error',
+                                message: '置顶失败!'
+                            });
+                        }else{
+                            that.$message({
+                                type: 'success',
+                                message: '置顶成功!'
+                            });
+                            that.bindData();
+                        }
+                    }
+                });
+            },
+
+            //element表格的筛选
+            filterHandler(value, row, column) {
+                const property = column['property'];
+                return row[property] === value;
+            }
+
         },
         mounted() {
-            // 动态设置背景图的高度为浏览器可视区域高度
-            // 首先在Virtual DOM渲染数据时，设置下demo的高度．
-            this.styleObject.height = `${document.documentElement.clientWidth*0.4}px`; // 具体计算看需要
-            // 然后监听window的resize事件．在浏览器窗口变化时再设置下背景图高度．
-            const that = this;
-            window.onresize = function temp() {
-                that.styleObject.height = `${document.documentElement.clientWidth*0.4}px`;
-            };
         },
 
         created() {

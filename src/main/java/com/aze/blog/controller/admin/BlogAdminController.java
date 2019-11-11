@@ -1,16 +1,9 @@
-package com.aze.blog.controller.api;
-
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
+package com.aze.blog.controller.admin;
 
 import com.aze.blog.common.Result;
 import com.aze.blog.dao.BlogMapper;
 import com.aze.blog.model.Blog;
 import com.aze.blog.service.BlogService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
  * @version:
  */
 @RestController
-@RequestMapping("/api/blog")
-public class BlogApiController {
+@RequestMapping("/admin/blog")
+public class BlogAdminController {
     @Autowired
     BlogMapper blogMapper;
     @Autowired
@@ -51,10 +44,21 @@ public class BlogApiController {
         return Result.successData(blogService.selectByIsStick());
     }
 
-    @GetMapping("/getById/{blogId}")
-    public Result getById(@PathVariable String blogId) {
-        return Result.successData(blogMapper.selectById(blogId));
+    @PostMapping("/insert")
+    public Result insertBlog(@RequestBody Blog blog) {
+        return Result.successData(blogMapper.insert(blog));
     }
 
+    /**
+     * @description: 博客置顶
+     * @author: Aze
+     * @time: 2019/11/11 16:27
+     * @return:
+     */
+    @PostMapping("/stickBlog/{id}")
+    public Result stickBlog(@PathVariable String id) {
+        blogService.stickBlog(id);
+        return Result.success();
+    }
 
 }
